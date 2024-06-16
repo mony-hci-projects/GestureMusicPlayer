@@ -125,9 +125,10 @@ class MainWindow(QMainWindow):
                     self.execute(command)
                     previous_command = command
             except RuntimeError as e:
-                previous_centers.clear()
-                current_center = (0, 0)
+                previous_centers.append(current_center)
             except TypeError as e:
+                print(type(e), e)
+            except ValueError as e:
                 print(type(e), e)
 
             current_time = time.time()

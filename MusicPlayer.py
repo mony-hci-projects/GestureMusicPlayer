@@ -54,13 +54,23 @@ class MusicPlayer:
         # 初始化音乐播放器
         pygame.mixer.init()
         self.__music_controller = pygame.mixer.music
-        self.music_id = 0
-        self.volume = 2  # pygame 的音乐播放器音乐调节范围为 0.0 到 1.0，为避免浮点运算带来的误差，使用整数并除以十传入 set_volume 方法
+        self.music_id = 0 if len(self.music_list) > 0 else -1
+        self.volume = 3  # pygame 的音乐播放器音乐调节范围为 0.0 到 1.0，为避免浮点运算带来的误差，使用整数并除以十传入 set_volume 方法
         self.is_pausing = True
 
         thread = threading.Thread(target=self.run)
         thread.setDaemon(True)
         thread.start()
+
+
+    def set_root_path(self, root_path):
+        # 设置播放器音乐文件夹目录
+        if not os.path.exists(root_path):
+            os.mkdir(root_path)
+        self.root_path = os.path.abspath(root_path)
+        self.music_list = os.listdir(self.root_path)
+        self.music_num = len(self.music_list)
+        self.music_id = 0 if len(self.music_list) > 0 else -1
 
 
     def run(self):
@@ -108,7 +118,7 @@ class MusicPlayer:
 
 
     def like_current_song(self):
-        current_song = self.music_list[self.music_id]
+        current_song = os.path.join(self.root_path, self.music_list[self.music_id])
         if current_song not in self.favorite:
             self.favorite.append(current_song)
         else:
@@ -142,6 +152,9 @@ class MusicPlayer:
             pix_img = QtGui.QPixmap('./pictures/default_cover.png')
             pix = pix_img.scaled(300, 300, QtCore.Qt.KeepAspectRatio)
             return pix
+        except IndexError:
+            print("根目录为空")
+            return None
 
 
     def execute(self, command: Command) -> int | Command:
@@ -190,11 +203,3 @@ class MusicPlayer:
                 raise TypeError(x, "Expected Command, found:", type(x))
         print(f"当前音量：{self.volume}; 当前歌曲：{self.music_list[self.music_id]}")
         return self.music_id  # 返回当前歌曲 ID
-
-# 测试代码
-if __name__ == '__main__':
-    p = MusicPlayer('music')
-    print(p.music_list)
-    import time
-    import multiprocessing
-    time.sleep(4)

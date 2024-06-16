@@ -2,7 +2,7 @@ import math
 
 # 计算向量2范数
 def vectorSize(p1,p2):
-    return math.sqrt((p1[0]-p2[0])**2+(p1[1]-p2[1])**2)
+    return math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
 
 # 余弦定理计算向量夹角
 def vectorAngle(p1,p2,p3):
@@ -10,7 +10,7 @@ def vectorAngle(p1,p2,p3):
     c = math.sqrt((p2[0] - p3[0]) ** 2 + (p2[1] - p3[1]) ** 2)
     a = math.sqrt((p3[0] - p1[0]) ** 2 + (p3[1] - p1[1]) ** 2)
     angle = 0
-    if ((2 * b * c)>1e-10):
+    if ((2 * b * c)>1e-7):
         angle = math.acos(((b ** 2 + c ** 2 - a ** 2) / (2 * b * c)))
     return math.degrees(angle)
 
@@ -27,10 +27,10 @@ def vectorAngle2(v1,v2):
         nor+=x*y#向量内积
         a+=x**2
         b+=y**2
-    if a==0 or b==0:
+    if a <= 1e-7 or b <= 1e-7:
         return None
-    cosTheta=nor/math.sqrt(a*b)
-    angle=math.acos(cosTheta)
+    cosTheta = nor / math.sqrt(a*b)
+    angle = math.acos(cosTheta)
     return math.degrees(angle)
 
 # 判断手指是否张开
@@ -43,25 +43,25 @@ def fingersUp(landmarks):
         fingers.append(0)
 
     # 食指
-    if vectorSize(landmarks[0],landmarks[8])>vectorSize(landmarks[0],landmarks[6]):
+    if vectorSize(landmarks[0],landmarks[8]) > vectorSize(landmarks[0],landmarks[6]):
         fingers.append(1)
     else:
         fingers.append(0)
 
     # 中指
-    if vectorSize(landmarks[0],landmarks[12])>vectorSize(landmarks[0],landmarks[10]):
+    if vectorSize(landmarks[0],landmarks[12]) > vectorSize(landmarks[0],landmarks[10]):
         fingers.append(1)
     else:
         fingers.append(0)
 
      # 无名指
-    if vectorSize(landmarks[0],landmarks[16])>vectorSize(landmarks[0],landmarks[14]):
+    if vectorSize(landmarks[0],landmarks[16]) > vectorSize(landmarks[0],landmarks[14]):
         fingers.append(1)
     else:
         fingers.append(0)
 
      # 小拇指
-    if vectorSize(landmarks[0],landmarks[20])>vectorSize(landmarks[0],landmarks[18]):
+    if vectorSize(landmarks[0],landmarks[20]) > vectorSize(landmarks[0],landmarks[18]):
         fingers.append(1)
     else:
         fingers.append(0)

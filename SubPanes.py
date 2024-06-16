@@ -1,3 +1,4 @@
+import os
 import qtawesome
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -31,7 +32,9 @@ class ListPane(QFrame):
 
         self.favorite_list = QListWidget()
         for i in range(0, len(player.favorite)):
-            song = ".".join(player.favorite[i].split(".")[:-1])
+            path = self.player.favorite[i]
+            filename = os.path.basename(path)
+            song = ".".join(filename.split(".")[:-1])
             item = QListWidgetItem(self.favorite_list)
             item.setText(song)
 
@@ -50,6 +53,25 @@ class ListPane(QFrame):
             info_list.setItem(i, 1, QTableWidgetItem(self.gesture_functions[i]['function']))
 
         listpane_layout.addWidget(info_list)
+
+        set_rootpath_button = QPushButton()
+        set_rootpath_button.setText("切换音乐目录")
+        set_rootpath_button.clicked.connect(self.set_root_path)
+
+        listpane_layout.addWidget(set_rootpath_button)
+
+
+    def set_root_path(self):
+        root_path = QFileDialog.getExistingDirectory(self, '选择文件夹', './')
+        if root_path:
+            self.player.set_root_path(root_path)
+            self.music_list.clear()
+            for i in range(0, len(self.player.music_list)):
+                song = ".".join(self.player.music_list[i].split(".")[:-1])
+                item = QListWidgetItem(self.music_list)
+                item.setText(song)
+            self.update_current_song()
+            self.repaint()
 
 
     def switch_song(self):
@@ -92,7 +114,9 @@ class MainPane(QFrame):
         self.layout.addWidget(self.camera_label, 3, 0, 6, 8)
 
     def update_cover(self):
-        self.cover_label.setPixmap(self.player.get_current_cover())
+        cover = self.player.get_current_cover()
+        if cover:
+            self.cover_label.setPixmap(cover)
 
 
     def update_camera_image(self, image):
@@ -162,6 +186,8 @@ class ControlPane(QFrame):
 
 
     def update_label(self):
+        if self.player.music_id < 0:
+            return
         self.song_label.setText(self.player.music_list[self.player.music_id])
         if self.player.get_busy():
             self.toggle_button.setIcon(qtawesome.icon('fa.pause', color='#3FC89C', font=18))

@@ -1,32 +1,27 @@
+# 一个基于手势识别的音乐播放器
+
+同济大学 2023-2024 学年春季学期人机交互技术期末项目。
+
 ## 项目架构
 
-- 主界面：使用 PyQt5 绘制界面
-- 音乐播放模块：使用 Pygame 模块控制音乐播放
-- 手势识别模块：使用 mediapipe 进行手势识别
+本项目主要包含以下三个模块：
+
+- 用户界面：程序使用 PyQt5 绘制界面，并使用 QSS 完成界面美化；
+- 音乐播放模块：本程序使用 Pygame 库控制音乐播放，并使用 mutagen 库和 PIL 库完成对音乐封面的提取与处理；
+- 手势识别模块：本程序主要使用 mediapipe 进行手势识别，并借助 opencv-python 库处理视频流、获取摄像头实时数据。
 
 ## 项目依赖
 
 - 开发环境：Python3.10.5
-- 依赖包：PyQt5 pygame mediapipe opencv-python qtawesome
+- 依赖包：PyQt5 pygame mediapipe opencv-python qtawesome mutagen
 
 ## 音乐播放器主要功能
 
-播放 | 暂停
-上一首 | 下一首
-增加音量 | 降低音量
-收藏 | 取消收藏
-关闭应用
+如下功能均支持手势操作：
 
-## 待删
+- 音乐的播放与暂停
+- 切换播放的音乐
+- 调节音量
+- 收藏与取消收藏音乐
+- 关闭应用
 
-pygame.mixer.music.set_endevent(pygame.USEREVENT + 1)
-
-在音乐播放完成时，用事件的方式通知用户程序，设置当音乐播放完成时发送pygame.USEREVENT+1事件给用户程序。
-
- 
-
-pygame.mixer.music.queue(filename)
-
-使用指定下一个要播放的音乐文件，当前的音乐播放完成后自动开始播放指定的下一个。一次只能指定一个等待播放的音乐文件。
-
-要循环播放音频，可以使用pygame.mixer.music.play()函数的可选参数-1。例如，pygame.mixer.music.play(-1)将使音频无限循环播放。

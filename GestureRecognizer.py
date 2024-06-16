@@ -5,16 +5,11 @@ from fingersVector import fingersUp, vectorSize, vectorAngle, mkVector, vectorAn
 
 @unique
 class Command(Enum):
-    # PLAY = auto()
     VOLUME_UP = auto()
     VOLUME_DOWN = auto()
-    # PAUSE = auto()
-    # RESUME = auto()
     TOGGLE = auto()
     NEXT = auto()
     PREVIOUS = auto()
-    # LIKE = auto()
-    # UNLIKE = auto()
     TOGGLE_FAVORITE = auto()
     EXIT = auto()
     NONE = auto()
@@ -56,8 +51,10 @@ class GestureRecognizer:
         angle = vectorAngle2(center_vector, x_axis)
         if center_vector[0] > 0 and current_previous_distance > 180 and angle < 30:
             command = Command.NEXT
+            print("右挥手")
         elif center_vector[0] < 0 and current_previous_distance > 180 and angle > 150:
             command = Command.PREVIOUS
+            print("左挥手")
 
         return current_center, command
 
@@ -65,9 +62,6 @@ class GestureRecognizer:
     def __static_gesture_recognise(self, landmark) -> Command:
         command = Command.NONE
         fingers_status = fingersUp(landmark)
-        # if (fingers_status[0] == 0 and fingers_status[1] == 0 and fingers_status[2] == 1 and fingers_status[3] == 1 and fingers_status[4] == 1):
-        #     command = Command.TOGGLE
-        #     print("OK")
         if (fingers_status[0] == 0 and fingers_status[1] == 1 and fingers_status[2] == 1 and fingers_status[3] == 0 and fingers_status[4] == 0):
             command = Command.TOGGLE
             print("V")
