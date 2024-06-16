@@ -5,8 +5,6 @@ import cv2 as cv
 from collections import deque
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from qt_material import apply_stylesheet
-import qdarktheme
 import qdarkstyle
 
 from SubPanes import ListPane, MainPane, ControlPane
@@ -147,13 +145,9 @@ class MainWindow(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    # qdarktheme.setup_theme(custom_colors={"primary": "#D0BCFF"})
     app.setStyleSheet(qdarkstyle.load_stylesheet(qt_api="pyqt5"))
 
     w = MainWindow()
-
-    # apply_stylesheet(app, theme="dark_teal.xml")
-
     w.show()
 
     app.exec_()
