@@ -16,7 +16,7 @@ class Command(Enum):
 
 class GestureRecognizer:
     gesture_functions = [
-        {"gesture": "V", "function": "播放/暂停", "command": Command.TOGGLE},
+        {"gesture": "V形", "function": "播放/暂停", "command": Command.TOGGLE},
         {"gesture": "左挥手", "function": "上一曲", "command": Command.PREVIOUS},
         {"gesture": "右挥手", "function": "下一曲", "command": Command.NEXT},
         {"gesture": "大拇指", "function": "增加音量", "command": Command.VOLUME_UP},

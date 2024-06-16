@@ -82,7 +82,6 @@ class MusicPlayer:
             except Exception as e:
                 # 由于使用了多线程，可能会在退出程序时出现异常，但不影响程序正常使用
                 print(e)
-                pass
 
 
     def play(self):
@@ -125,6 +124,13 @@ class MusicPlayer:
             self.favorite.remove(current_song)
 
 
+    def is_current_in_favorite(self):
+        if self.music_id < 0:
+            return False
+        current_song = os.path.join(self.root_path, self.music_list[self.music_id])
+        return current_song in self.favorite
+
+
     def get_current_cover(self):
         try:
             # 歌曲文件可能缺失 APIC 标签(KeyError)或全部标签(TypeError, 因为对不存在的 tags 进行了索引)
@@ -159,24 +165,15 @@ class MusicPlayer:
 
     def execute(self, command: Command) -> int | Command:
         match command:
-            # case Command.PLAY:
-            #     self.play()
             case Command.TOGGLE:
                 if self.__music_controller.get_busy():
                     self.__music_controller.pause()
                     self.is_pausing = True
-                    pass
                 elif self.__music_controller.get_pos() == -1:
                     self.play()
                 else:
                     self.__music_controller.unpause()
                     self.is_pausing = False
-            # case Command.PAUSE:
-            #     self.__music_controller.pause()
-            #     self.is_pausing = True
-            # case Command.RESUME:
-            #     self.__music_controller.unpause()
-            #     self.is_pausing = False
             case Command.NEXT:
                 self.next()
             case Command.PREVIOUS:
@@ -189,10 +186,6 @@ class MusicPlayer:
                 if self.volume > 0:
                     self.volume -= 1
                     self.__music_controller.set_volume(self.volume / 10)
-            # case Command.LIKE:
-            #     pass
-            # case Command.UNLIKE:
-            #     pass
             case Command.TOGGLE_FAVORITE:
                 self.like_current_song()
             case Command.EXIT:

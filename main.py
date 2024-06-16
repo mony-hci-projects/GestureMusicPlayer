@@ -5,6 +5,9 @@ import cv2 as cv
 from collections import deque
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
+from qt_material import apply_stylesheet
+import qdarktheme
+import qdarkstyle
 
 from SubPanes import ListPane, MainPane, ControlPane
 from GestureRecognizer import Command, GestureRecognizer
@@ -47,7 +50,7 @@ class MainWindow(QMainWindow):
         # 主窗口布局
         main_layout = QGridLayout()
         main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
+        main_layout.setSpacing(5)
 
         main_widget = QWidget()
         main_widget.setLayout(main_layout)
@@ -144,8 +147,13 @@ class MainWindow(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    # qdarktheme.setup_theme(custom_colors={"primary": "#D0BCFF"})
+    app.setStyleSheet(qdarkstyle.load_stylesheet(qt_api="pyqt5"))
 
     w = MainWindow()
+
+    # apply_stylesheet(app, theme="dark_teal.xml")
+
     w.show()
 
     app.exec_()

@@ -17,48 +17,52 @@ class ListPane(QFrame):
         self.player = player
         self.gesture_functions = recognizer.gesture_functions
 
-        listpane_layout = QVBoxLayout()
-        self.setLayout(listpane_layout)
+        self.listpane_layout = QVBoxLayout()
+        self.setLayout(self.listpane_layout)
+
+        self.button_layout = QHBoxLayout()
+        self.listpane_layout.addLayout(self.button_layout)
+
+        self.music_widget = QStackedWidget()
+        self.listpane_layout.addWidget(self.music_widget)
+
+        self.music_list_button = QPushButton()
+        self.music_list_button.setText("音乐列表")
+        self.music_list_button.clicked.connect(lambda: self.music_widget.setCurrentIndex(0))
+        self.button_layout.addWidget(self.music_list_button)
+
+        self.favorite_list_button = QPushButton()
+        self.favorite_list_button.setText("收藏列表")
+        self.favorite_list_button.clicked.connect(lambda: self.music_widget.setCurrentIndex(1))
+        self.button_layout.addWidget(self.favorite_list_button)
 
         self.music_list = QListWidget()
         self.music_list.doubleClicked.connect(self.switch_song)
-        for i in range(0, len(player.music_list)):
-            song = ".".join(player.music_list[i].split(".")[:-1])
+        for i in range(0, len(self.player.music_list)):
+            song = ".".join(self.player.music_list[i].split(".")[:-1])
             item = QListWidgetItem(self.music_list)
             item.setText(song)
         self.update_current_song()
-
-        listpane_layout.addWidget(self.music_list)
+        self.music_widget.addWidget(self.music_list)
 
         self.favorite_list = QListWidget()
-        for i in range(0, len(player.favorite)):
-            path = self.player.favorite[i]
-            filename = os.path.basename(path)
-            song = ".".join(filename.split(".")[:-1])
-            item = QListWidgetItem(self.favorite_list)
-            item.setText(song)
+        self.update_favorite()
+        self.music_widget.addWidget(self.favorite_list)
 
-        listpane_layout.addWidget(self.favorite_list)
-
-        # TODO: 所有歌曲与收藏歌曲占用同一窗格，需要切换
-        # 使用 QStackedLayout 和 setCurrentIndex （test.py right_layout）
-
-        info_list = QTableWidget()
-        info_list.setColumnCount(2)
-        info_list.setColumnWidth(0, 80)
-        info_list.setRowCount(len(self.gesture_functions))
-        info_list.setHorizontalHeaderLabels(['手势', '功能'])
+        self.info_list = QTableWidget()
+        self.info_list.setColumnCount(2)
+        self.info_list.setColumnWidth(0, 80)
+        self.info_list.setRowCount(len(self.gesture_functions))
+        self.info_list.setHorizontalHeaderLabels(['手势', '功能'])
         for i in range(0, len(self.gesture_functions)):
-            info_list.setItem(i, 0, QTableWidgetItem(self.gesture_functions[i]['gesture']))
-            info_list.setItem(i, 1, QTableWidgetItem(self.gesture_functions[i]['function']))
+            self.info_list.setItem(i, 0, QTableWidgetItem(self.gesture_functions[i]['gesture']))
+            self.info_list.setItem(i, 1, QTableWidgetItem(self.gesture_functions[i]['function']))
+        self.listpane_layout.addWidget(self.info_list)
 
-        listpane_layout.addWidget(info_list)
-
-        set_rootpath_button = QPushButton()
-        set_rootpath_button.setText("切换音乐目录")
-        set_rootpath_button.clicked.connect(self.set_root_path)
-
-        listpane_layout.addWidget(set_rootpath_button)
+        self.set_rootpath_button = QPushButton()
+        self.set_rootpath_button.setText("切换音乐目录")
+        self.set_rootpath_button.clicked.connect(self.set_root_path)
+        self.listpane_layout.addWidget(self.set_rootpath_button)
 
 
     def set_root_path(self):
@@ -89,7 +93,9 @@ class ListPane(QFrame):
     def update_favorite(self):
         self.favorite_list.clear()
         for i in range(0, len(self.player.favorite)):
-            song = ".".join(self.player.favorite[i].split(".")[:-1])
+            path = self.player.favorite[i]
+            filename = os.path.basename(path)
+            song = ".".join(filename.split(".")[:-1])
             item = QListWidgetItem(self.favorite_list)
             item.setText(song)
 
@@ -106,11 +112,9 @@ class MainPane(QFrame):
 
         self.cover_label = QLabel()
         self.update_cover()
-
         self.layout.addWidget(self.cover_label, 0, 0, 2, 2)
 
         self.camera_label = QLabel()
-
         self.layout.addWidget(self.camera_label, 3, 0, 6, 8)
 
     def update_cover(self):
@@ -134,55 +138,53 @@ class ControlPane(QFrame):
         super(ControlPane, self).__init__()
         self.player = player
 
-        controlpane_layout = QGridLayout()
-        controlpane_layout.setColumnStretch(10, 0)
-        self.setLayout(controlpane_layout)
+        self.controlpane_layout = QGridLayout()
+        self.controlpane_layout.setColumnStretch(10, 0)
+        self.setLayout(self.controlpane_layout)
 
         self.toggle_button = QPushButton(qtawesome.icon('fa.play', color='#F76677', font=18), "")
         self.toggle_button.setIconSize(QtCore.QSize(30, 30))
         self.toggle_button.clicked.connect(self.toggle_player_status)
-
-        controlpane_layout.addWidget(self.toggle_button, 0, 4, 1, 1)
+        self.controlpane_layout.addWidget(self.toggle_button, 0, 4, 1, 1)
 
         self.song_label = QLabel()
         self.update_label()
+        self.controlpane_layout.addWidget(self.song_label, 0, 0, 1, 3)
 
-        controlpane_layout.addWidget(self.song_label, 0, 0, 1, 3)
+        self.previous_button = QPushButton(qtawesome.icon('fa.backward', color="#3FC89C"), "")
+        self.previous_button.clicked.connect(self.previous_song)
+        self.controlpane_layout.addWidget(self.previous_button, 0, 3, 1, 1)
 
-        previous_button = QPushButton()
-        previous_button.setText("previous")
-        previous_button.clicked.connect(self.previous_song)
+        self.next_button = QPushButton(qtawesome.icon('fa.forward', color="#3FC89C"), "")
+        self.next_button.clicked.connect(self.next_song)
+        self.controlpane_layout.addWidget(self.next_button, 0, 5, 1, 1)
 
-        controlpane_layout.addWidget(previous_button, 0, 3, 1, 1)
-
-        next_button = QPushButton()
-        next_button.setText("next")
-        next_button.clicked.connect(self.next_song)
-
-        controlpane_layout.addWidget(next_button, 0, 5, 1, 1)
-
-        self.volume_down_button = QPushButton()
-        self.volume_down_button.setText("volume down")
+        self.volume_down_button = QPushButton(qtawesome.icon('fa.volume-down', color="#3FC89C"), "")
         self.volume_down_button.clicked.connect(self.volume_down)
+        self.controlpane_layout.addWidget(self.volume_down_button, 1, 0, 1, 4)
 
-        controlpane_layout.addWidget(self.volume_down_button, 1, 0, 1, 4)
-
-        self.volume_up_button = QPushButton()
-        self.volume_up_button.setText("volume up")
+        self.volume_up_button = QPushButton(qtawesome.icon('fa.volume-up', color="#3FC89C"), "")
         self.volume_up_button.clicked.connect(self.volume_up)
+        self.controlpane_layout.addWidget(self.volume_up_button, 1, 5, 1, 4)
 
-        controlpane_layout.addWidget(self.volume_up_button, 1, 5, 1, 4)
-
-        like_button = QPushButton()
-        like_button.setText("like")
-        like_button.clicked.connect(self.mark_like)
-
-        controlpane_layout.addWidget(like_button, 0, 8, 1, 1)
+        self.like_button = QPushButton(qtawesome.icon('fa.star', color="#3FC89C"), "")
+        self.update_like_button()
+        self.like_button.clicked.connect(self.mark_like)
+        self.controlpane_layout.addWidget(self.like_button, 0, 8, 1, 1)
 
 
+    # 收藏当前歌曲
     def mark_like(self):
         self.player.execute(Command.TOGGLE_FAVORITE)
+        self.update_like_button()
         self.new_favorite.emit()
+
+
+    def update_like_button(self):
+        if self.player.is_current_in_favorite():
+            self.like_button.setText("取消收藏")
+        else:
+            self.like_button.setText("收藏")
 
 
     def update_label(self):
@@ -206,16 +208,18 @@ class ControlPane(QFrame):
     def next_song(self):
         self.player.execute(Command.NEXT)
         self.update_label()
+        self.update_like_button()
         self.new_song.emit()
 
 
     def previous_song(self):
         self.player.execute(Command.PREVIOUS)
         self.update_label()
+        self.update_like_button()
         self.new_song.emit()
 
 
     def toggle_player_status(self):
         self.player.execute(Command.TOGGLE)
         self.update_label()
-
+        self.update_like_button()
