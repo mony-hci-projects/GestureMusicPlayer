@@ -9,6 +9,7 @@ def vectorAngle(p1,p2,p3):
     b = math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
     c = math.sqrt((p2[0] - p3[0]) ** 2 + (p2[1] - p3[1]) ** 2)
     a = math.sqrt((p3[0] - p1[0]) ** 2 + (p3[1] - p1[1]) ** 2)
+    angle = 0
     if ((2 * b * c)>1e-10):
         angle = math.acos(((b ** 2 + c ** 2 - a ** 2) / (2 * b * c)))
     return math.degrees(angle)
