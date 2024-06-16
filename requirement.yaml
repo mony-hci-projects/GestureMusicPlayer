@@ -22,15 +22,19 @@ dependencies:
   - zlib=1.2.13=h8cc25b3_1
   - pip:
       - absl-py==2.1.0
+      - altgraph==0.17.4
       - attrs==23.2.0
       - cffi==1.16.0
       - contourpy==1.2.1
       - cycler==0.12.1
+      - darkdetect==0.7.1
       - flatbuffers==24.3.25
       - fonttools==4.53.0
       - jax==0.4.29
       - jaxlib==0.4.29
+      - jinja2==3.1.4
       - kiwisolver==1.4.5
+      - markupsafe==2.1.5
       - matplotlib==3.9.0
       - mediapipe==0.10.14
       - ml-dtypes==0.4.0
@@ -40,6 +44,7 @@ dependencies:
       - opencv-python==4.10.0.82
       - opt-einsum==3.3.0
       - packaging==24.1
+      - pefile==2023.2.7
       - pillow==10.3.0
       - protobuf==4.25.3
       - pycparser==2.22
@@ -49,6 +54,8 @@ dependencies:
       - pyqt5-qt5==5.15.2
       - pyqt5-sip==12.13.0
       - python-dateutil==2.9.0.post0
+      - pywin32-ctypes==0.2.2
+      - qdarkstyle==3.2.3
       - qtawesome==1.3.1
       - qtpy==2.4.1
       - scipy==1.13.1
